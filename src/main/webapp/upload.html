@@ -1,0 +1,22 @@
+<html>
+	<head>
+		<script src="js/dropzone.js"></script>
+		<script src="js/jquery.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/dropzone.css"/>
+		<script type="text/javascript">
+            Dropzone.autoDiscover = true;
+            Dropzone.options.myDrop = {
+                paramName: "file",
+                maxFilesize: 10,
+                maxFiles: 10,
+                autoProcessQueue: true,
+                uploadMultiple : true,
+                parallelUploads : 5
+            };
+		</script>
+	</head>
+	<body>
+		<form action="/SampleApp/up" class="dropzone" id="myDrop">
+		</form>	
+	</body>
+</html>
