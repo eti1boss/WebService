@@ -4,19 +4,37 @@
     <meta charset="UTF-8">
     <title>Users</title>
     <script type="application/javascript" src="js/jquery.js"></script>
+    <script type="application/javascript" src="js/core-min.js"></script>
+    <script type="application/javascript" src="js/enc-utf16-min.js"></script>
+    <script type="application/javascript" src="js/enc-base64-min.js"></script>
+    <script type="application/javascript" src="js/hmac-sha1.js"></script>
 </head>
 <body>
-    <h1>Users</h1>
-    <table id="users">
-    </table>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $.getJSON("/SampleApp/api/users/all", function(data){
-                $.each(data, function(index, user){
-                    $("#users").append("<tr><td>"+user.email+"</td></tr>")
-                })
+<h1>Users</h1>
+<input type="button" id="getData" value="Get It !"/>
+<table id="users">
+</table>
+<script type="text/javascript">
+    $("#getData").on('click',function(){
+
+        var user = "bob";        // Récupéré depuis la page d'authentification.
+        var password = "toto";   // Récupéré depuis la page d'authentification.
+        const salt = "48@!alsd"; // Connu côté client dès le début.
+        var encryptedPassword = CryptoJS.SHA1(CryptoJS.SHA1(password)+salt);
+        var httpVerb = "GET";
+        var currentTime = +new Date();
+        var url = "/SampleApp/api/users/all?user=" + user + "&timestamp=" + currentTime;
+        var httpUrl = httpVerb + ":" + url;
+        var signature = CryptoJS.HmacSHA1(httpUrl,encryptedPassword).toString(CryptoJS.enc.Base64);
+        url = url + "&signature=" + signature;
+
+        $.getJSON(url, function(data){
+            $("#users").html("");
+            $.each(data, function(index, user){
+                $("#users").append("<tr><td>"+user.email+"</td></tr>")
             })
         })
-    </script>
+    });
+</script>
 </body>
 </html>

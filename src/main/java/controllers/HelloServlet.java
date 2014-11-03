@@ -1,5 +1,6 @@
 package controllers;
 
+import javax.ejb.Stateless;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -17,6 +18,7 @@ import java.io.InputStream;
 /**
  * Created by Bob on 23/10/2014.
  */
+@Stateless
 @WebServlet(name = "hello", urlPatterns = "/up")
 @MultipartConfig(location = "/", fileSizeThreshold=1024*1024*10,    // 10 MB
         maxFileSize=1024*1024*50,          // 50 MB
