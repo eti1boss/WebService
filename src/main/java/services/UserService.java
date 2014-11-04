@@ -6,10 +6,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
@@ -30,8 +27,12 @@ public class UserService {
 
 
     @GET
-    @Path("/users/{email}")
-    public Response getUserById(@PathParam("email") String email, @Context Request req)
+    @Path("/users")
+    public Response getUserById(
+            @Context Request req,
+            @QueryParam("email") String email,
+            @QueryParam("id") String id
+    )
     {
         TypedQuery<User> query = em.createQuery("select u from User u where u.email = '"+email+"'", User.class);
         Response.ResponseBuilder rb = Response.ok(query.getSingleResult());

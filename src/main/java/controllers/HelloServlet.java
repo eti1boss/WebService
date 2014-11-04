@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.SecurityContext;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -24,7 +26,8 @@ import java.io.InputStream;
         maxFileSize=1024*1024*50,          // 50 MB
         maxRequestSize=1024*1024*100)      // 100 MB
 public class HelloServlet extends HttpServlet {
-
+    @Context
+    SecurityContext securityContext;
     private static final String UPLOAD_DIR = "uploads";
 
     @Override
