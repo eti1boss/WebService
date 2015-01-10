@@ -5,11 +5,20 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>hello</servlet-name>
-        <url-pattern>/up</url-pattern>
+        <url-pattern>/hello/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>tester</servlet-name>
+        <servlet-class>Tester</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>tester</servlet-name>
+        <url-pattern>/tester/*</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>
-        <welcome-file>upload.html</welcome-file>
+        <welcome-file>login.html</welcome-file>
     </welcome-file-list>
 
     <security-constraint>
@@ -18,13 +27,8 @@
             <url-pattern>/upload.html</url-pattern>
             <http-method>GET</http-method>
         </web-resource-collection>
-        <web-resource-collection>
-            <web-resource-name>up</web-resource-name>
-            <url-pattern>/up</url-pattern>
-            <http-method>GET</http-method>
-        </web-resource-collection>
         <user-data-constraint>
-            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+            <transport-guarantee>NONE</transport-guarantee>
         </user-data-constraint>
     </security-constraint>
 

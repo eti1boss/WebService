@@ -10,25 +10,19 @@
     <script type="application/javascript" src="js/hmac-sha1.js"></script>
 </head>
 <body>
+
+<form action="tester/" method="get">
+    <input type="text" value="bob.cat@email.com" name="email"/>
+    <input type="password" value="password" name="password"/>
+    <input type="submit" value="TEST"/>
+</form>
 <h1>Users</h1>
 <input type="button" id="getData" value="Get It !"/>
 <table id="users">
 </table>
 <script type="text/javascript">
     $("#getData").on('click',function(){
-
-        var user = "bob";        // Récupéré depuis la page d'authentification.
-        var password = "toto";   // Récupéré depuis la page d'authentification.
-        const salt = "48@!alsd"; // Connu côté client dès le début.
-        var encryptedPassword = CryptoJS.SHA1(password);
-        console.log(encryptedPassword.toString());
-        var httpVerb = "GET";
-        var currentTime = +new Date();
-        var url = "/SampleApp/api/users/all?user=" + user + "&timestamp=" + currentTime;
-        var httpUrl = httpVerb + ":" + url;
-        var signature = CryptoJS.HmacSHA1(httpUrl,encryptedPassword).toString(CryptoJS.enc.Base64);
-        url = url + "&signature=" + signature;
-
+        var url = "/SampleApp/api/users/all";
         $.getJSON(url, function(data){
             $("#users").html("");
             $.each(data, function(index, user){
@@ -36,6 +30,7 @@
             })
         })
     });
+
 </script>
 </body>
 </html>

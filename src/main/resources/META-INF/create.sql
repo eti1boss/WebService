@@ -1,1 +1,1 @@
-create table users(email varchar(50) primary key)
+create table users(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,email VARCHAR(50) NOT NULL UNIQUE,password VARCHAR(40) NOT NULL);

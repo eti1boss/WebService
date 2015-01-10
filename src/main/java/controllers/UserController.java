@@ -3,11 +3,14 @@ package controllers;
 import models.User;
 import services.UserService;
 
-import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
@@ -18,15 +21,28 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by Bob on 23/10/2014.
  */
 @Path("/users")
 @MultipartConfig(location="/")
-public class UserController {
-    @Inject
+public class UserController{
+
     private UserService userService;
+
+    public String merde(){
+        userService = new UserService();
+        return userService.chiotte();
+    }
+
+    public List<User> getUser(String email){
+        EntityManagerFactory factory = Persistence.createEntityManagerFactory("customerManager");
+        EntityManager em = factory.createEntityManager();
+        TypedQuery<User> query = em.createQuery("select u from User u where u.email = '" + email + "'", User.class);
+        return query.getResultList();
+    }
 
     @Path("/all")
     @GET

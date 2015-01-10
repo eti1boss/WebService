@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>LOGIN</title>
+    <script type="application/javascript" src="js/jquery.js"></script>
+    <script type="application/javascript" src="js/jquery.cookie.js"></script>
+    <script type="application/javascript" src="js/core-min.js"></script>
+    <script type="application/javascript" src="js/enc-utf16-min.js"></script>
+    <script type="application/javascript" src="js/enc-base64-min.js"></script>
+    <script type="application/javascript" src="js/hmac-sha1.js"></script>
+</head>
+<body>
+<h1>Login</h1>
+<div id="login"></div>
+<form id="getData">
+    <input type="text" id="email" required="required" value="e.bossuet@gmail.com"/>
+    <input type="password" id="password" required="required" value="toto"/>
+    <input type="submit" value="Log In"/>
+</form>
+
+<input type="button" id="S3" value="Connect to S3"/>
+
+
+<div id="pictures"></div>
+
+<script type="text/javascript">
+    var a = "ok";
+    $("#getData").on('submit',function(e){
+
+        e.preventDefault();
+
+        var user = $("#email").val();//"e.bossuet@gmail.com";        // Récupéré depuis la page d'authentification.
+        var password = $("#password").val();//"toto";
+        //password = "toto";   // Récupéré depuis la page d'authentification.
+        const salt = CryptoJS.SHA1(user); // Connu côté client dès le début.
+        var encryptedPassword = CryptoJS.SHA1(CryptoJS.SHA1(password)+salt);
+        var httpVerb = "GET";
+        var currentTime = Date.now();
+//        var url = "http://localhost:8080/SampleApp/api/user-service/users?email=" + user + "&timestamp=" + currentTime;
+
+// GLASSFISH
+        var url = "http://localhost:8080/SampleApp/tester/login?email=" + user + "&timestamp=" + currentTime;
+//        var url = "https://localhost:8181/SampleApp/up?email=" + user + "&timestamp=" + currentTime;
+
+// TOMCAT
+//        var url = "http://localhost:8080/up?email=" + user + "&timestamp=" + currentTime;
+//        var url = "https://localhost:8443/up?email=" + user + "&timestamp=" + currentTime;
+        var httpUrl = httpVerb + ":" + url;
+        var signature= CryptoJS.HmacSHA1(httpUrl.toString(),encryptedPassword.toString()).toString(CryptoJS.enc.Base64);
+        //console.log(signature);
+        signature = (encodeURIComponent(signature));
+        //console.log(signature);
+        url = url + "&signature=" + signature;
+
+//        $.cookie("token2", "shlebelebele", { expires :10, secure : true, httpOnly:true });
+
+//        console.log(document.cookie);
+
+        $.ajax({
+            type:'GET',
+            url:url,
+            xhrFields: {
+                withCredentials: true
+            },
+            crossDomain:true,
+            success : function(data){
+//                console.log(data);
+                //a = data;
+                a = $.parseJSON(data);
+                a = $.parseJSON(a);
+//                console.log(a);
+                $.each(a, function(i){
+                    $("#pictures").append("<img title=\""+a[i]+"\" width=\"20%\" src=\"/SampleApp"+a[i]+"\" />");
+                    //console.log(a[i]);
+                });
+                //$("#login").html(data);
+            },
+            error : function(data){
+                $("#login").html("ACCESS DENIED");
+            },
+            done : function(){
+                console.log("ok");
+            }
+        });
+        //console.log("après");
+    });
+
+    $("#S3").on('click',function(){
+        var StringToSign = "GET" + "\n" +
+                + "\n" +
+                + "\n" +
+                Date.now() + "\n" +
+                "/1.jpg";
+
+        var secret = "J9gJp98k8PZ7IQ/0ZJMBsnJtH7ASBQ7yYTlLaMUD";
+
+        //var Signature = Base64( HMAC-SHA1( YourSecretAccessKeyID, UTF-8-Encoding-Of( StringToSign ) ) );
+
+        var Signature = CryptoJS.HmacSHA1(secret,StringToSign).toString(CryptoJS.enc.Base64);
+
+        var Authorization = "AWS" + " " + "AKIAIIQB47FR6FNCVTXA" + ":" + Signature;
+
+        $.ajax({
+            type:'GET',
+            url:'https://cuploud.s3.amazonaws.com?Authorization='+Authorization,
+            success:function(data){
+                alert(data);
+            }
+        });
+    });
+
+</script>
+</body>
+</html>
+
+<!--asadmin> set configs.config.server-config.network-config.network-listeners.network-listener.http-listener-1.enabled=false-->

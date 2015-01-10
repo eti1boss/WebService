@@ -1,2 +1,2 @@
-insert into users (email) values ('e.bossuet@gmail.com');
-insert into users (email) values ('e.bossuet@laposte.net');
+insert into users (email,password) values ('e.bossuet@gmail.com','f85a28c83dec40f21f42aa9f4f375ee43cff2b94');
+insert into users (email,password) values ('e.bossuet@laposte.net','f85a28c83dec40f21f42aa9f4f375ee43cff2b94');
