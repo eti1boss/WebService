@@ -18,7 +18,7 @@
     </servlet-mapping>
 
     <welcome-file-list>
-        <welcome-file>login.html</welcome-file>
+        <welcome-file>tester/</welcome-file>
     </welcome-file-list>
 
     <security-constraint>

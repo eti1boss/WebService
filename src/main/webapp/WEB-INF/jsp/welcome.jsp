@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>LOGIN</title>
+    <title>LOGIN !</title>
     <script type="application/javascript" src="${pageContext.request.contextPath}/js/jquery.js"></script>
     <script type="application/javascript" src="${pageContext.request.contextPath}/js/jquery.cookie.js"></script>
     <script type="application/javascript" src="${pageContext.request.contextPath}/js/core-min.js"></script>
@@ -11,18 +11,13 @@
     <script type="application/javascript" src="${pageContext.request.contextPath}/js/hmac-sha1.js"></script>
 </head>
 <body>
-<h1>Login</h1>
+<h1>Login !</h1>
 <div id="login"></div>
 <form id="getData">
     <input type="text" id="email" required="required" value="e.bossuet@gmail.com"/>
     <input type="password" id="password" required="required" value="toto"/>
     <input type="submit" value="Log In"/>
 </form>
-
-<input type="button" id="S3" value="Connect to S3"/>
-
-
-<div id="pictures"></div>
 
 <script type="text/javascript">
     var a = "ok";
@@ -52,8 +47,6 @@
 
 window.location = url;
     });
-
-
 
 </script>
 </body>

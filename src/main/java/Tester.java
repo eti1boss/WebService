@@ -1,5 +1,6 @@
 import controllers.Authenticator;
 import controllers.Utils;
+import org.apache.commons.io.FileUtils;
 
 import javax.ejb.Stateless;
 import javax.imageio.ImageIO;
@@ -29,7 +30,6 @@ import java.util.List;
 @WebServlet(name = "Tester")
 public class Tester extends HttpServlet {
 
-
     private static final String UPLOAD_DIR = "/uploads/";
 
     @Override
@@ -37,16 +37,26 @@ public class Tester extends HttpServlet {
 
         // gets absolute path of the web application
         String applicationPath = getServletContext().getRealPath("");
+        Timestamp stamp = new Timestamp(System.currentTimeMillis());
+        String user = "public/"+stamp.getTime();
 
-        String user = "public";
         Cookie[] listCook = request.getCookies();
+        boolean hasCookie = false;
         if (listCook != null) {
             for(int i = 0;i<listCook.length;i++){
-                if(listCook[i].getName().equals("token")){
+                if(listCook[i].getName().equals("token") || listCook[i].getName().equals("public")){
                     user = listCook[i].getValue().substring(0, listCook[i].getValue().indexOf(":"));
+                    hasCookie = true;
                 }
             }
         }
+        if(!hasCookie) {
+            Cookie newCookie = new Cookie("public", user+":");
+            newCookie.setHttpOnly(true);
+            newCookie.setSecure(false);
+            response.addCookie(newCookie);
+        }
+
 
         // constructs path of the directory to save uploaded file
         String uploadFilePath = applicationPath + File.separator + UPLOAD_DIR+user;
@@ -62,8 +72,7 @@ public class Tester extends HttpServlet {
         String fileName = null;
         //Get all the parts from request and write it to the file on server
         for (Part part : request.getParts()) {
-            Timestamp stamp = (new Timestamp(System.currentTimeMillis()));
-            long time = stamp.getTime();
+            stamp = new Timestamp(System.currentTimeMillis());
             fileName = getFileName(part);
             InputStream inputStream = part.getInputStream();
 
@@ -76,7 +85,7 @@ public class Tester extends HttpServlet {
             BufferedImage resizeImageJpg2 = resizeImage(originalImage, type, (int)(width * 0.5), (int)(height * 0.5));
             //BufferedImage resizeImageJpg1 = resizeImage(originalImage, type, (int)(width * 0.25), (int)(height * 0.25));
 
-            File directorySave = new File(fileSaveDir+"/"+time+"_"+fileName);
+            File directorySave = new File(fileSaveDir+"/"+stamp.getTime()+"_"+fileName);
             if (!directorySave.exists()) {
                 directorySave.mkdirs();
             }
@@ -86,8 +95,7 @@ public class Tester extends HttpServlet {
             ImageIO.write(resizeImageJpg2, "jpg", new File(directorySave+"/"+"050_"+fileName));
             //ImageIO.write(resizeImageJpg1, "jpg", new File(directorySave+"/"+"025_"+fileName));
         }
-        Authenticator auth = new Authenticator();
-        response.getWriter().write(request.isSecure()+"\n"+user+"\njob done");
+        response.getWriter().write(request.isSecure() + "\n" + user + "\njob done");
     }
     /**
      * Utility method to get file name from HTTP header content-disposition
@@ -119,26 +127,37 @@ public class Tester extends HttpServlet {
         String redirect = "DEBUT";
 
         if(action.equals("/url")) {
-
             Timestamp stamp = (new Timestamp(System.currentTimeMillis()));
             long time = stamp.getTime();
             Date date = new Date(time);
             response.getWriter().println(time+"<br/>"+date);
         }
 
-        if(action.equals("/welcome")) {
+        if(action.equals("/welcome") || action.equals("/")) {
             request.getRequestDispatcher("/WEB-INF/jsp/welcome.jsp").forward(request, response);
+        }
+
+        if(action.equals("/delete")) {
+            String picName = request.getParameter("pictureName");
+            FileUtils.deleteDirectory(new File("/uploads/e.bossuet@gmail.com/"+picName));
+            response.sendRedirect("pictures");
         }
 
         if( action.equals("/pictures")) {
             boolean hasCookie = false;
             Cookie[] listCook = request.getCookies();
-            String user = null;
+            String user = "";
+            boolean isPublic = true;
             if (listCook != null) {
                 for(int i = 0;i<listCook.length;i++){
-                    if(listCook[i].getName().equals("token")){
+                    if(listCook[i].getName().equals("token")) {
+                        user = listCook[i].getValue().substring(0, listCook[i].getValue().indexOf(":"));
                         hasCookie = true;
-                        user = listCook[i].getValue().substring(0,listCook[i].getValue().indexOf(":"));
+                        isPublic = false;
+                    }
+                    if(listCook[i].getName().equals("public")) {
+                        user = listCook[i].getValue().substring(0, listCook[i].getValue().indexOf(":"));
+                        hasCookie = true;
                     }
                 }
             }
@@ -147,7 +166,6 @@ public class Tester extends HttpServlet {
                 File directory = new File("/uploads/"+user);
                 HashMap<String,List<String>> files = new HashMap<>();
                 if(directory.exists()){
-                    // get all the files from a directory
                     File[] fList = directory.listFiles();
                     for (File file : fList) {
                         String dir = file.getName();
@@ -158,6 +176,7 @@ public class Tester extends HttpServlet {
                         files.put(dir,pic);
                     }
 
+                    request.setAttribute("user",isPublic ? "" : user);
                     request.setAttribute("file",files);
                     request.getRequestDispatcher("/WEB-INF/jsp/lol.jsp").forward(request,response);
                 } else {
@@ -165,10 +184,26 @@ public class Tester extends HttpServlet {
                 }
 
             } else {
-                response.sendRedirect("welcome");
+                response.sendRedirect("upload");
             }
         }
         if (action.equals("/upload")) {
+            Cookie[] listCook = request.getCookies();
+            String user = "";
+            String isPublic = "";
+            if (listCook != null) {
+                for(int i = 0;i<listCook.length;i++){
+                    if(listCook[i].getName().equals("token")) {
+                        user = listCook[i].getValue().substring(0, listCook[i].getValue().indexOf(":"));
+                    }
+                    if(listCook[i].getName().equals("public")) {
+                        user = "";
+                        isPublic = "isPublic";
+                    }
+                }
+            }
+            request.setAttribute("isPublic",isPublic);
+            request.setAttribute("user",user);
             request.getRequestDispatcher("/WEB-INF/jsp/upload.jsp").forward(request,response);
         }
         if( action.equals("/logout")) {
@@ -177,7 +212,7 @@ public class Tester extends HttpServlet {
             newCookie.setMaxAge(0);
             newCookie.setSecure(false);
             response.addCookie(newCookie);
-            response.sendRedirect("login");
+            response.sendRedirect("upload");
         }
         if( action.equals("/login")) {
             boolean access = false;
@@ -209,7 +244,7 @@ public class Tester extends HttpServlet {
                         //NewCookie newCook = new NewCookie("token", token, "", "", "commentaire", 5, true, true);
                         Cookie newCookie = new Cookie("token", token);
                         newCookie.setHttpOnly(true);
-                        newCookie.setMaxAge(30);
+//                        newCookie.setMaxAge(30);
                         newCookie.setSecure(false);
                         response.addCookie(newCookie);
 
