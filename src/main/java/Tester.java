@@ -1,4 +1,5 @@
 import controllers.Authenticator;
+import controllers.UserDAO;
 import controllers.Utils;
 import org.apache.commons.io.FileUtils;
 
@@ -35,67 +36,84 @@ public class Tester extends HttpServlet {
     @Override
     protected void doPost(@Context HttpServletRequest request, @Context HttpServletResponse response) throws ServletException, IOException {
 
-        // gets absolute path of the web application
-        String applicationPath = getServletContext().getRealPath("");
-        Timestamp stamp = new Timestamp(System.currentTimeMillis());
-        String user = "public/"+stamp.getTime();
+        String action = request.getPathInfo();
 
-        Cookie[] listCook = request.getCookies();
-        boolean hasCookie = false;
-        if (listCook != null) {
-            for(int i = 0;i<listCook.length;i++){
-                if(listCook[i].getName().equals("token") || listCook[i].getName().equals("public")){
-                    user = listCook[i].getValue().substring(0, listCook[i].getValue().indexOf(":"));
-                    hasCookie = true;
+        if (action.equals("/register")) {
+//            response.sendRedirect("");
+            String resultat = "début";
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
+            UserDAO userDAO = new UserDAO();
+            resultat = userDAO.addUser(email,password);
+            response.getWriter().println(resultat);
+
+        }
+
+        if (action.equals("/upload")) {
+
+            // gets absolute path of the web application
+            String applicationPath = getServletContext().getRealPath("");
+            Timestamp stamp = new Timestamp(System.currentTimeMillis());
+            String user = "public/"+stamp.getTime();
+
+            Cookie[] listCook = request.getCookies();
+            boolean hasCookie = false;
+            if (listCook != null) {
+                for(int i = 0;i<listCook.length;i++){
+                    if(listCook[i].getName().equals("token") || listCook[i].getName().equals("public")){
+                        user = listCook[i].getValue().substring(0, listCook[i].getValue().indexOf(":"));
+                        hasCookie = true;
+                    }
                 }
             }
-        }
-        if(!hasCookie) {
-            Cookie newCookie = new Cookie("public", user+":");
-            newCookie.setHttpOnly(true);
-            newCookie.setSecure(false);
-            response.addCookie(newCookie);
-        }
-
-
-        // constructs path of the directory to save uploaded file
-        String uploadFilePath = applicationPath + File.separator + UPLOAD_DIR+user;
-
-
-        // creates the save directory if it does not exists
-        File fileSaveDir = new File(UPLOAD_DIR+user);
-        if (!fileSaveDir.exists()) {
-            fileSaveDir.mkdirs();
-        }
-        System.out.println("Upload File Directory="+fileSaveDir.getPath());
-
-        String fileName = null;
-        //Get all the parts from request and write it to the file on server
-        for (Part part : request.getParts()) {
-            stamp = new Timestamp(System.currentTimeMillis());
-            fileName = getFileName(part);
-            InputStream inputStream = part.getInputStream();
-
-            BufferedImage originalImage = ImageIO.read(inputStream);
-            int type = originalImage.getType() == 0? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
-            int height= originalImage.getHeight();
-            int width = originalImage.getWidth();
-
-            BufferedImage resizeImageJpg3 = resizeImage(originalImage, type, (int)(width * 0.75), (int)(height * 0.75));
-            BufferedImage resizeImageJpg2 = resizeImage(originalImage, type, (int)(width * 0.5), (int)(height * 0.5));
-            //BufferedImage resizeImageJpg1 = resizeImage(originalImage, type, (int)(width * 0.25), (int)(height * 0.25));
-
-            File directorySave = new File(fileSaveDir+"/"+stamp.getTime()+"_"+fileName);
-            if (!directorySave.exists()) {
-                directorySave.mkdirs();
+            if(!hasCookie) {
+                Cookie newCookie = new Cookie("public", user+":");
+                newCookie.setHttpOnly(true);
+                newCookie.setSecure(false);
+                response.addCookie(newCookie);
             }
 
-            ImageIO.write(originalImage, "jpg", new File(directorySave+"/"+"100_"+fileName));
-            ImageIO.write(resizeImageJpg3, "jpg", new File(directorySave+"/"+"075_"+fileName));
-            ImageIO.write(resizeImageJpg2, "jpg", new File(directorySave+"/"+"050_"+fileName));
-            //ImageIO.write(resizeImageJpg1, "jpg", new File(directorySave+"/"+"025_"+fileName));
+
+            // constructs path of the directory to save uploaded file
+            String uploadFilePath = applicationPath + File.separator + UPLOAD_DIR+user;
+
+
+            // creates the save directory if it does not exists
+            File fileSaveDir = new File(UPLOAD_DIR+user);
+            if (!fileSaveDir.exists()) {
+                fileSaveDir.mkdirs();
+            }
+            System.out.println("Upload File Directory="+fileSaveDir.getPath());
+
+            String fileName = null;
+            //Get all the parts from request and write it to the file on server
+            for (Part part : request.getParts()) {
+                stamp = new Timestamp(System.currentTimeMillis());
+                fileName = getFileName(part);
+                InputStream inputStream = part.getInputStream();
+
+                BufferedImage originalImage = ImageIO.read(inputStream);
+                int type = originalImage.getType() == 0? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
+                int height= originalImage.getHeight();
+                int width = originalImage.getWidth();
+
+                BufferedImage resizeImageJpg3 = resizeImage(originalImage, type, (int)(width * 0.75), (int)(height * 0.75));
+                BufferedImage resizeImageJpg2 = resizeImage(originalImage, type, (int)(width * 0.5), (int)(height * 0.5));
+                //BufferedImage resizeImageJpg1 = resizeImage(originalImage, type, (int)(width * 0.25), (int)(height * 0.25));
+
+                File directorySave = new File(fileSaveDir+"/"+stamp.getTime()+"_"+fileName);
+                if (!directorySave.exists()) {
+                    directorySave.mkdirs();
+                }
+
+                ImageIO.write(originalImage, "jpg", new File(directorySave+"/"+"100_"+fileName));
+                ImageIO.write(resizeImageJpg3, "jpg", new File(directorySave+"/"+"075_"+fileName));
+                ImageIO.write(resizeImageJpg2, "jpg", new File(directorySave+"/"+"050_"+fileName));
+                //ImageIO.write(resizeImageJpg1, "jpg", new File(directorySave+"/"+"025_"+fileName));
+            }
+            response.getWriter().write(request.isSecure() + "\n" + user + "\njob done");
+
         }
-        response.getWriter().write(request.isSecure() + "\n" + user + "\njob done");
     }
     /**
      * Utility method to get file name from HTTP header content-disposition

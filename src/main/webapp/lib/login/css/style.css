@@ -45,9 +45,12 @@ Main components
 
 -------------------------------- */
 header[role=banner] {
-  position: relative;
+  position: fixed;
   height: 50px;
   background: #343642;
+  width: 100%;
+  top: 0;
+  z-index: 150;
 }
 header[role=banner] #cd-logo {
   float: left;

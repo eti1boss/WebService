@@ -66,7 +66,7 @@
   </nav>
 </header>
 <div style="margin-left: 50px; margin-right: 50px; margin-top: 100px">
-  <form action="/SampleApp/tester/" class="dropzone" id="myDrop">
+  <form action="/SampleApp/tester/upload" class="dropzone" id="myDrop">
   </form>
 </div>
 
@@ -107,17 +107,17 @@
     </div> <!-- cd-login -->
 
     <div id="cd-signup"> <!-- sign up form -->
-      <form class="cd-form">
+      <form action="/SampleApp/tester/register" method="post" class="cd-form">
 
         <p class="fieldset">
-          <label class="image-replace cd-email" for="signup-email">E-mail</label>
-          <input class="full-width has-padding has-border" id="signup-email" type="email" placeholder="E-mail">
+          <label class="image-replace cd-email" for="email">E-mail</label>
+          <input class="full-width has-padding has-border" name="email" id="email" type="email" placeholder="E-mail">
           <span class="cd-error-message">Error message here!</span>
         </p>
 
         <p class="fieldset">
-          <label class="image-replace cd-password" for="signup-password">Password</label>
-          <input class="full-width has-padding has-border" id="signup-password" type="text"  placeholder="Password">
+          <label class="image-replace cd-password" for="password">Password</label>
+          <input class="full-width has-padding has-border" name="password" id="password" type="text"  placeholder="Password">
           <a href="#0" class="hide-password">Hide</a>
           <span class="cd-error-message">Error message here!</span>
         </p>
