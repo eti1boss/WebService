@@ -80,4 +80,19 @@ public class Utils {
         String signature = calculateHash(sha1,email+mySalt+timeStamp);
         return email+":"+timeStamp+":"+signature;
     }
+
+    public boolean checkToken(String token) throws Exception {
+        String[] data = token.split(":");
+        String email = data[0];
+        String timeStamp = data[1];
+        String signature = data[2];
+        MessageDigest sha1 = MessageDigest.getInstance("SHA1");
+        String calculatedSignature = calculateHash(sha1,email+mySalt+timeStamp);
+
+        if(signature.equals(calculatedSignature)){
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

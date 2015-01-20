@@ -56,6 +56,9 @@
         <c:otherwise>
           <li><span style="color: white; ">${user}</span></li>
           <li><a class="cd-signin" id="pic" href="pictures">Your pictures</a></li>
+          <c:if test="${admin}">
+            <li><a class="cd-signin" href="admin">Admin</a></li>
+          </c:if>
           <li><a class="cd-signup" href="logout">Logout</a></li>
         </c:otherwise>
       </c:choose>
@@ -117,8 +120,7 @@
 
         <p class="fieldset">
           <label class="image-replace cd-password" for="password">Password</label>
-          <input class="full-width has-padding has-border" name="password" id="password" type="text"  placeholder="Password">
-          <a href="#0" class="hide-password">Hide</a>
+          <input class="full-width has-padding has-border" name="password" id="password" type="password"  placeholder="Password">
           <span class="cd-error-message">Error message here!</span>
         </p>
 

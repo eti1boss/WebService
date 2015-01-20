@@ -46,22 +46,11 @@
   <nav class="open main-nav">
     <ul>
 
-
-      <c:choose>
-        <c:when test="${empty user}">
-          <li><a class="cd-signin" id="pic" href="upload">Upload now !</a></li>
-          <li><a class="open cd-signin" href="#0">Sign in</a></li>
-          <li><a class="open cd-signup" href="#0">Sign up</a></li>
-        </c:when>
-        <c:otherwise>
           <li><span style="color: white; ">${user}</span></li>
-          <li><a class="cd-signin" id="pic" href="upload">Upload now !</a></li>
-          <c:if test="${admin}">
-            <li><a class="cd-signin" href="admin">Admin</a></li>
-          </c:if>
+      <li><a class="cd-signin" id="pic" href="upload">Upload now !</a></li>
+      <li><a class="cd-signin" id="pic" href="pictures">Your pictures</a></li>
           <li><a class="cd-signup" href="logout">Logout</a></li>
-        </c:otherwise>
-      </c:choose>
+
 
     </ul>
   </nav>
@@ -69,37 +58,30 @@
 
 <form id="test" action="/SampleApp/tester/delete" method="get">
   <input type="hidden" name="pictureName" value=""/>
+  <input type="hidden" name="admin" value="true"/>
 </form>
 
-<div style="margin-top: 150px">
-  <ul class="grid cs-style-7">
-    <c:set var="zindex" value="100"/>
-    <c:forEach items="${file}" var="entry">
-      <c:set var="zindex" value="${zindex-1}"/>
-      <li style="padding: 20px;z-index: ${zindex}">
-        <figure>
-          <div class="nailthumb-container mySize">
-            <img width="20%" src="${pageContext.request.contextPath}<c:out value="${entry.value[0]}"/>" title="<c:out value="${entry.key}"/>" />
-          </div>
-          <figcaption>
-            <c:set var="name" value="${ fn:substringAfter(entry.key, '_') }"/>
-            <c:set var="date" value="${ fn:substringBefore(entry.key, '_') }"/>
-            <h3>${name}</h3>
-
-            <a href="${pageContext.request.contextPath}<c:out value="${entry.value[2]}"/>">High</a>
-            <a href="${pageContext.request.contextPath}<c:out value="${entry.value[1]}"/>">Medium</a>
-            <a href="${pageContext.request.contextPath}<c:out value="${entry.value[0]}"/>">Low</a>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a onclick="deletePic('${entry.key}')" href="#">Delete</a>
-          </figcaption>
-        </figure>
-      </li>
-    </c:forEach>
-  </ul>
+<div style="position : absolute;margin-top: 150px">
+  <c:forEach items="${file}" var="lvl1">
+    <h1><a onclick="deletePic('/uploads/${lvl1.key}')" href="#">${lvl1.key}</a></h1>
+      <c:forEach items="${lvl1.value}" var="lvl2">
+        <h2>&nbsp;&nbsp;<a onclick="deletePic('/uploads/${lvl1.key}/${lvl2.key}')" href="#">${lvl2.key}</a></h2>
+          <c:forEach items="${lvl2.value}" var="lvl3">
+            <c:set var="zindex" value="/uploads/${lvl1.key}/${lvl2.key}/${lvl3}"/>
+            <h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a onclick="deletePic('${zindex}')" href="#"><span style="color:dodgerblue" onmouseover="show('${pageContext.request.contextPath}/${zindex}/050_${ fn:substringAfter(lvl3, '_') }')">${lvl3}</span></a></h3>
+          </c:forEach>
+      </c:forEach>
+  </c:forEach>
 </div>
 
+<img id="img" src="" style="max-width:800px; max-height:800px; position: fixed; top: 200px;margin-left: 800px"/>
 
-
+<script type="application/javascript">
+  function show(path) {
+    $("#img").prop('src',path);
+//    alert(path);
+  }
+</script>
 
   <div class="cd-user-modal"> <!-- this is the entire modal form, including the background -->
     <div class="cd-user-modal-container"> <!-- this is the container wrapper -->
@@ -138,17 +120,18 @@
       </div> <!-- cd-login -->
 
       <div id="cd-signup"> <!-- sign up form -->
-        <form action="/SampleApp/tester/register" method="post" class="cd-form">
+        <form class="cd-form">
 
           <p class="fieldset">
-            <label class="image-replace cd-email" for="email">E-mail</label>
-            <input class="full-width has-padding has-border" name="email" id="email" type="email" placeholder="E-mail">
+            <label class="image-replace cd-email" for="signup-email">E-mail</label>
+            <input class="full-width has-padding has-border" id="signup-email" type="email" placeholder="E-mail">
             <span class="cd-error-message">Error message here!</span>
           </p>
 
           <p class="fieldset">
-            <label class="image-replace cd-password" for="password">Password</label>
-            <input class="full-width has-padding has-border" name="password" id="password" type="password"  placeholder="Password">
+            <label class="image-replace cd-password" for="signup-password">Password</label>
+            <input class="full-width has-padding has-border" id="signup-password" type="text"  placeholder="Password">
+            <a href="#0" class="hide-password">Hide</a>
             <span class="cd-error-message">Error message here!</span>
           </p>
 

@@ -27,6 +27,8 @@ public class Authenticator {
         String signature = req.getParameter("signature");
         javax.servlet.http.Cookie[] cookies = req.getCookies();
 
+        System.out.println("ebos : " +email + " : " + signature);
+
         try {
             signature = URLDecoder.decode(signature, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -47,7 +49,10 @@ public class Authenticator {
         MessageDigest sha1 = MessageDigest.getInstance("SHA1");
 
         UserDAO userDAO = new UserDAO();
+
         User user = userDAO.getUser(email);
+
+        System.out.println("user : " + user.getPassword());
 
         //Si l'utilisateur demandé n'existe pas, on le jette
         if (user == null) {
@@ -80,7 +85,9 @@ public class Authenticator {
     }
 
 
-    public boolean isAdmin() {
-        return false;
+    public boolean isAdmin(String user) {
+        UserDAO userDAO = new UserDAO();
+        User userFound = userDAO.getUser(user);
+            return userFound.isAdmin();
     }
 }

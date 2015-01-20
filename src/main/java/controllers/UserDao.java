@@ -8,11 +8,9 @@ import models.User;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import javax.transaction.*;
+import javax.transaction.RollbackException;
 import java.security.MessageDigest;
 
 public class UserDAO {
@@ -50,14 +48,12 @@ public class UserDAO {
                 em.persist(a);
                 a.setEmail(email);
                 a.setPassword(password);
+                a.setAdmin(false);
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-/*        } else {
-            redirect = email + " already exists !";
-        }
-*/
+
         em.joinTransaction();
         try {
             transaction.commit();
@@ -78,56 +74,45 @@ public class UserDAO {
         return redirect;
     }
 
-    public User getUser(String email) {
+    public User getUser(String email){
         String redirect = "debut";
         EntityManagerFactory emf =
                 Persistence.createEntityManagerFactory("customerManager");
         EntityManager em = emf.createEntityManager();
 
         UserTransaction transaction = null;
+
         try {
             transaction = (UserTransaction)new InitialContext().lookup("java:comp/UserTransaction");
-        } catch (NamingException e) {
-            redirect = e.getMessage();
-            e.printStackTrace();
-        }
-        try {
             transaction.begin();
+        } catch (NamingException e) {
+            e.printStackTrace();
         } catch (NotSupportedException e) {
-            redirect = e.getMessage();
             e.printStackTrace();
         } catch (SystemException e) {
-            redirect = e.getMessage();
             e.printStackTrace();
         }
 
-        TypedQuery<User> res = em.createQuery("select u from User u where u.email = 'e.bossuet@gmail.com'", User.class);
-        User user = res.getSingleResult();
-
-/*        User a = new User();
-        em.persist(a);
-        a.setEmail(email);
-        a.setPassword("YOUPIIIIIIIIIIII");*/
-
-//        User newU = em.createQuery("select u from User u where u.id = 2",User.class).getSingleResult();
-//        newU.setEmail("ok");
-
+        TypedQuery<User> res = em.createQuery("select u from User u where u.email = '"+email+"'", User.class);
+        User user;
+        try {
+            user = res.getSingleResult();
+        } catch (NoResultException e) {
+            user = null;
+        }
         em.joinTransaction();
         try {
             transaction.commit();
         } catch (RollbackException e) {
-            redirect = "RollbackException <br/>"+e.getMessage();
             e.printStackTrace();
         } catch (HeuristicMixedException e) {
-            redirect = "HeuristicMixedException <br/>"+e.getMessage();
             e.printStackTrace();
         } catch (HeuristicRollbackException e) {
-            redirect = "HeuristicRollbackException <br/>"+e.getMessage();
             e.printStackTrace();
         } catch (SystemException e) {
-            redirect = "SystemException <br/>"+e.getMessage();
             e.printStackTrace();
         }
+
         return user;
     }
 }

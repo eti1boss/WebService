@@ -32,6 +32,8 @@ import java.util.List;
 public class Tester extends HttpServlet {
 
     private static final String UPLOAD_DIR = "/uploads/";
+    Utils utils = new Utils();
+    Authenticator authenticator = new Authenticator();
 
     @Override
     protected void doPost(@Context HttpServletRequest request, @Context HttpServletResponse response) throws ServletException, IOException {
@@ -44,8 +46,13 @@ public class Tester extends HttpServlet {
             String email = request.getParameter("email");
             String password = request.getParameter("password");
             UserDAO userDAO = new UserDAO();
-            resultat = userDAO.addUser(email,password);
-            response.getWriter().println(resultat);
+            if (userDAO.getUser(email) == null) {
+                resultat = userDAO.addUser(email,password);
+                request.setAttribute("message", "Félicitations " + email + ", votre compte a bien été créé.<br/> Vous pouvez maintenant vous connecter");
+            } else {
+                request.setAttribute("message", "Erreur, cet utilisateur existe déjà.");
+            }
+            request.getRequestDispatcher("/WEB-INF/jsp/infos.jsp").forward(request, response);
 
         }
 
@@ -54,13 +61,26 @@ public class Tester extends HttpServlet {
             // gets absolute path of the web application
             String applicationPath = getServletContext().getRealPath("");
             Timestamp stamp = new Timestamp(System.currentTimeMillis());
-            String user = "public/"+stamp.getTime();
+            String user = ""+stamp.getTime();
+            String root = "";
 
             Cookie[] listCook = request.getCookies();
             boolean hasCookie = false;
             if (listCook != null) {
                 for(int i = 0;i<listCook.length;i++){
-                    if(listCook[i].getName().equals("token") || listCook[i].getName().equals("public")){
+                    if(listCook[i].getName().equals("token")){
+                        root = "private";
+                        user = listCook[i].getValue().substring(0, listCook[i].getValue().indexOf(":"));
+                        try {
+                            if(utils.checkToken(listCook[i].getValue())){
+                                hasCookie = true;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if(listCook[i].getName().equals("public")){
+                        root = "public";
                         user = listCook[i].getValue().substring(0, listCook[i].getValue().indexOf(":"));
                         hasCookie = true;
                     }
@@ -73,13 +93,12 @@ public class Tester extends HttpServlet {
                 response.addCookie(newCookie);
             }
 
-
             // constructs path of the directory to save uploaded file
-            String uploadFilePath = applicationPath + File.separator + UPLOAD_DIR+user;
+            String uploadFilePath = applicationPath + File.separator + UPLOAD_DIR+root+"/"+user;
 
 
             // creates the save directory if it does not exists
-            File fileSaveDir = new File(UPLOAD_DIR+user);
+            File fileSaveDir = new File(UPLOAD_DIR+root+"/"+user);
             if (!fileSaveDir.exists()) {
                 fileSaveDir.mkdirs();
             }
@@ -111,7 +130,7 @@ public class Tester extends HttpServlet {
                 ImageIO.write(resizeImageJpg2, "jpg", new File(directorySave+"/"+"050_"+fileName));
                 //ImageIO.write(resizeImageJpg1, "jpg", new File(directorySave+"/"+"025_"+fileName));
             }
-            response.getWriter().write(request.isSecure() + "\n" + user + "\njob done");
+//            response.getWriter().write(request.isSecure() + "\n" + user + "\njob done");
 
         }
     }
@@ -144,6 +163,56 @@ public class Tester extends HttpServlet {
         String action = request.getPathInfo();
         String redirect = "DEBUT";
 
+        if (action.equals("/admin")) {
+
+            Cookie[] listCook = request.getCookies();
+            String user = "";
+            String root = "";
+            boolean continu = false;
+            if (listCook != null) {
+                for(int i = 0;i<listCook.length;i++){
+                    if(listCook[i].getName().equals("token")) {
+                        root = "private";
+                        user = listCook[i].getValue().substring(0, listCook[i].getValue().indexOf(":"));
+                        try {
+                            if(utils.checkToken(listCook[i].getValue())){
+                                if(authenticator.isAdmin(user)){
+                                    continu = true;
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+            if(continu){
+                File directory = new File(UPLOAD_DIR);
+                HashMap<String,HashMap> list = new HashMap<>();
+                if(directory.exists()) {
+                    File[] fList = directory.listFiles();
+                    for (File file : fList) {
+                        HashMap<String,List> files = new HashMap<>();
+                        for (File file2 : file.listFiles()) {
+                            List<String> lvl3 = new ArrayList<>();
+                            for (File file3 : file2.listFiles()) {
+                                lvl3.add(file3.getName());
+                            }
+                            files.put(file2.getName(),lvl3);
+                        }
+                        list.put(file.getName(),files);
+                    }
+                }
+
+                request.setAttribute("file", list);
+                request.setAttribute("user",user);
+                request.getRequestDispatcher("/WEB-INF/jsp/admin.jsp").forward(request, response);
+            } else {
+                response.sendRedirect("upload");
+            }
+
+        }
+
         if(action.equals("/url")) {
             Timestamp stamp = (new Timestamp(System.currentTimeMillis()));
             long time = stamp.getTime();
@@ -152,28 +221,67 @@ public class Tester extends HttpServlet {
         }
 
         if(action.equals("/welcome") || action.equals("/")) {
-            request.getRequestDispatcher("/WEB-INF/jsp/welcome.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/jsp/infos.jsp").forward(request, response);
         }
 
         if(action.equals("/delete")) {
             String picName = request.getParameter("pictureName");
-            FileUtils.deleteDirectory(new File("/uploads/e.bossuet@gmail.com/"+picName));
-            response.sendRedirect("pictures");
+            String admin = request.getParameter("admin");
+            if(admin == null){
+                admin = "false";
+            }
+
+            Cookie[] listCook = request.getCookies();
+            String user = "";
+            String root = "";
+            boolean isAdmin = false;
+            if (listCook != null) {
+                for(int i = 0;i<listCook.length;i++){
+                    if(listCook[i].getName().equals("token")) {
+                        root = "private";
+                        user = listCook[i].getValue().substring(0, listCook[i].getValue().indexOf(":"));
+                        if(authenticator.isAdmin(user) && admin.equals("true")){
+                            isAdmin = true ;
+                        }
+                    }
+                    if(listCook[i].getName().equals("public")) {
+                        root = "public";
+                        user = listCook[i].getValue().substring(0, listCook[i].getValue().indexOf(":"));
+                    }
+                }
+            }
+            if(isAdmin){
+                FileUtils.deleteDirectory(new File(picName));
+                response.sendRedirect("admin");
+            } else {
+                FileUtils.deleteDirectory(new File("/uploads/" + root+"/"+user + "/" + picName));
+                response.sendRedirect("pictures");
+            }
         }
 
         if( action.equals("/pictures")) {
             boolean hasCookie = false;
             Cookie[] listCook = request.getCookies();
             String user = "";
+            String root = "";
             boolean isPublic = true;
             if (listCook != null) {
                 for(int i = 0;i<listCook.length;i++){
                     if(listCook[i].getName().equals("token")) {
+                        root = "private";
                         user = listCook[i].getValue().substring(0, listCook[i].getValue().indexOf(":"));
-                        hasCookie = true;
                         isPublic = false;
+                        request.setAttribute("admin",authenticator.isAdmin(user));
+                        try {
+                            if(utils.checkToken(listCook[i].getValue())){
+                                hasCookie = true;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                     if(listCook[i].getName().equals("public")) {
+                        root = "public";
                         user = listCook[i].getValue().substring(0, listCook[i].getValue().indexOf(":"));
                         hasCookie = true;
                     }
@@ -181,26 +289,24 @@ public class Tester extends HttpServlet {
             }
             if(hasCookie){
 
-                File directory = new File("/uploads/"+user);
+                File directory = new File("/uploads/"+root+"/"+user);
                 HashMap<String,List<String>> files = new HashMap<>();
-                if(directory.exists()){
+                if(directory.exists()) {
                     File[] fList = directory.listFiles();
                     for (File file : fList) {
                         String dir = file.getName();
                         List<String> pic = new ArrayList<>();
-                        for(File file2 : file.listFiles()){
+                        for (File file2 : file.listFiles()) {
                             pic.add(file2.getPath());
                         }
-                        files.put(dir,pic);
+                        files.put(dir, pic);
                     }
-
+                    request.setAttribute("file", files);
                     request.setAttribute("user",isPublic ? "" : user);
-                    request.setAttribute("file",files);
-                    request.getRequestDispatcher("/WEB-INF/jsp/lol.jsp").forward(request,response);
+                    request.getRequestDispatcher("/WEB-INF/jsp/lol.jsp").forward(request, response);
                 } else {
-                    response.getWriter().println("You don't have any pictures");
+                    response.sendRedirect("upload");
                 }
-
             } else {
                 response.sendRedirect("upload");
             }
@@ -222,6 +328,7 @@ public class Tester extends HttpServlet {
             }
             request.setAttribute("isPublic",isPublic);
             request.setAttribute("user",user);
+            request.setAttribute("admin",user != "" ? authenticator.isAdmin(user) : "");
             request.getRequestDispatcher("/WEB-INF/jsp/upload.jsp").forward(request,response);
         }
         if( action.equals("/logout")) {
@@ -236,7 +343,6 @@ public class Tester extends HttpServlet {
             boolean access = false;
 
             Authenticator auth = new Authenticator();
-            Utils utils = new Utils();
             boolean hasCookie = false;
 
             Cookie[] listCook = request.getCookies();
@@ -252,12 +358,12 @@ public class Tester extends HttpServlet {
                 try {
                     access = auth.check(request);
                     if (access) {
-                        if (auth.isAdmin()) {
+                        String email = request.getParameter("email");
+                        if (auth.isAdmin(email)) {
                             redirect = "admin";
                         } else {
                             redirect = "user";
                         }
-                        String email = request.getParameter("email");
                         String token = utils.getToken(email);
                         //NewCookie newCook = new NewCookie("token", token, "", "", "commentaire", 5, true, true);
                         Cookie newCookie = new Cookie("token", token);
