@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_webservice" default="compile.module.webservice">
+  <dirname property="module.webservice.basedir" file="${ant.file.module_webservice}"/>
+  
+  <property name="module.jdk.home.webservice" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.webservice" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.webservice" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.webservice" value="-encoding UTF-8 -source 8 ${compiler.args}"/>
+  
+  <property name="webservice.output.dir" value="${module.webservice.basedir}/target/classes"/>
+  <property name="webservice.testoutput.dir" value="${module.webservice.basedir}/target/test-classes"/>
+  
+  <path id="webservice.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="webservice.module.production.classpath">
+    <path refid="${module.jdk.classpath.webservice}"/>
+    <path refid="library.grizzly-config.classpath"/>
+    <path refid="library.maven:_mysql:mysql-connector-java:5.1.34.classpath"/>
+    <path refid="library.maven:_javax.ws.rs:javax.ws.rs-api:2.0.1.classpath"/>
+    <path refid="library.maven:_javax:javaee-api:7.0.classpath"/>
+    <path refid="library.maven:_com.sun.mail:javax.mail:1.5.0.classpath"/>
+    <path refid="library.maven:_javax.activation:activation:1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.persistence:jpa-connector:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:hk2:1.1.6.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:hk2-core:1.1.6.classpath"/>
+    <path refid="library.maven:_org.glassfish.hk2:class-model:1.1.6.classpath"/>
+    <path refid="library.maven:_junit:junit:4.3.1.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:config:1.1.6.classpath"/>
+    <path refid="library.maven:_org.jvnet:tiger-types:1.2.classpath"/>
+    <path refid="library.maven:_org.glassfish.hk2.external:bean-validator:1.1.6.classpath"/>
+    <path refid="library.maven:_com.googlecode.jtype:jtype:0.1.0.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:auto-depends:1.1.6.classpath"/>
+    <path refid="library.maven:_org.glassfish.persistence:persistence-common:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.deployment:dol:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.servlet:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.annotation:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.transaction:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.enterprise.deploy:3.1.1.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:javax.persistence:2.0.3.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.resource:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.ejb:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:annotation-framework:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:common-util:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.deployment:deployment-common:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.external:management-api:3.1.0-b001.classpath"/>
+    <path refid="library.maven:_org.glassfish.gmbal:gmbal:3.1.0-b001.classpath"/>
+    <path refid="library.maven:_org.glassfish.hk2.external:asm-all-repackaged:1.1.6.classpath"/>
+    <path refid="library.maven:_org.glassfish.deployment:deployment-javaee-core:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.admin:config-api:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-config:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:osgi-adapter:1.0.25.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:container-common:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:glassfish-naming:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.corba:glassfish-corba-omgapi:3.1.0-b030.classpath"/>
+    <path refid="library.maven:_com.sun.corba:glassfish-corba-internal-api:3.1.0-b030.classpath"/>
+    <path refid="library.maven:_org.glassfish.orb:orb-connector:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.corba:glassfish-corba-orbgeneric:3.1.0-b030.classpath"/>
+    <path refid="library.maven:_org.glassfish.admin:monitoring-core:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:stats77:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.flashlight:flashlight-framework:3.1.1.classpath"/>
+    <pathelement location="${basedir}/../../../../Program Files/Java/jdk1.8.0_25/lib/tools.jar"/>
+    <path refid="library.maven:_org.glassfish.admin:admin-util:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.security:security:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.security:ssl-impl:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.security.auth.message:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.security.jacc:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.security:jaspic.provider.framework:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.ejb:ejb-internal-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.external:ldapbp-repackaged:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.external:libpam4j-repackaged:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-comet:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-http:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-framework:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-rcm:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-portunif:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-websockets:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-http-servlet:1.9.36.classpath"/>
+    <path refid="library.maven:_org.glassfish.connectors:connectors-internal-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.transaction:transaction-internal-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:glassfish-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:scattered-archive-api:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:config-types:1.1.6.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-utils:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-lzma:1.9.36.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:internal-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.final.classpath"/>
+    <path refid="library.maven:_jstl:jstl:1.2.classpath"/>
+    <path refid="library.maven:_commons-io:commons-io:2.4.classpath"/>
+    <path refid="library.maven:_commons-lang:commons-lang:2.5.classpath"/>
+  </path>
+  
+  <path id="webservice.runtime.production.module.classpath">
+    <pathelement location="${webservice.output.dir}"/>
+    <path refid="library.grizzly-config.classpath"/>
+    <path refid="library.maven:_mysql:mysql-connector-java:5.1.34.classpath"/>
+    <path refid="library.maven:_javax.ws.rs:javax.ws.rs-api:2.0.1.classpath"/>
+    <path refid="library.maven:_javax:javaee-api:7.0.classpath"/>
+    <path refid="library.maven:_com.sun.mail:javax.mail:1.5.0.classpath"/>
+    <path refid="library.maven:_javax.activation:activation:1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.persistence:jpa-connector:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:hk2:1.1.6.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:hk2-core:1.1.6.classpath"/>
+    <path refid="library.maven:_org.glassfish.hk2:class-model:1.1.6.classpath"/>
+    <path refid="library.maven:_junit:junit:4.3.1.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:config:1.1.6.classpath"/>
+    <path refid="library.maven:_org.jvnet:tiger-types:1.2.classpath"/>
+    <path refid="library.maven:_org.glassfish.hk2.external:bean-validator:1.1.6.classpath"/>
+    <path refid="library.maven:_com.googlecode.jtype:jtype:0.1.0.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:auto-depends:1.1.6.classpath"/>
+    <path refid="library.maven:_org.glassfish.persistence:persistence-common:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.deployment:dol:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.servlet:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.annotation:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.transaction:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.enterprise.deploy:3.1.1.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:javax.persistence:2.0.3.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.resource:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.ejb:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:annotation-framework:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:common-util:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.deployment:deployment-common:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.external:management-api:3.1.0-b001.classpath"/>
+    <path refid="library.maven:_org.glassfish.gmbal:gmbal:3.1.0-b001.classpath"/>
+    <path refid="library.maven:_org.glassfish.hk2.external:asm-all-repackaged:1.1.6.classpath"/>
+    <path refid="library.maven:_org.glassfish.deployment:deployment-javaee-core:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.admin:config-api:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-config:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:osgi-adapter:1.0.25.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:container-common:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:glassfish-naming:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.corba:glassfish-corba-omgapi:3.1.0-b030.classpath"/>
+    <path refid="library.maven:_com.sun.corba:glassfish-corba-internal-api:3.1.0-b030.classpath"/>
+    <path refid="library.maven:_org.glassfish.orb:orb-connector:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.corba:glassfish-corba-orbgeneric:3.1.0-b030.classpath"/>
+    <path refid="library.maven:_org.glassfish.admin:monitoring-core:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:stats77:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.flashlight:flashlight-framework:3.1.1.classpath"/>
+    <pathelement location="${basedir}/../../../../Program Files/Java/jdk1.8.0_25/lib/tools.jar"/>
+    <path refid="library.maven:_org.glassfish.admin:admin-util:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.security:security:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.security:ssl-impl:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.security.auth.message:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.security.jacc:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.security:jaspic.provider.framework:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.ejb:ejb-internal-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.external:ldapbp-repackaged:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.external:libpam4j-repackaged:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-comet:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-http:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-framework:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-rcm:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-portunif:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-websockets:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-http-servlet:1.9.36.classpath"/>
+    <path refid="library.maven:_org.glassfish.connectors:connectors-internal-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.transaction:transaction-internal-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:glassfish-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:scattered-archive-api:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:config-types:1.1.6.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-utils:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-lzma:1.9.36.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:internal-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.final.classpath"/>
+    <path refid="library.maven:_jstl:jstl:1.2.classpath"/>
+    <path refid="library.maven:_commons-io:commons-io:2.4.classpath"/>
+    <path refid="library.maven:_commons-lang:commons-lang:2.5.classpath"/>
+  </path>
+  
+  <path id="webservice.module.classpath">
+    <path refid="${module.jdk.classpath.webservice}"/>
+    <pathelement location="${webservice.output.dir}"/>
+    <path refid="library.grizzly-config.classpath"/>
+    <path refid="library.maven:_mysql:mysql-connector-java:5.1.34.classpath"/>
+    <path refid="library.maven:_javax.ws.rs:javax.ws.rs-api:2.0.1.classpath"/>
+    <path refid="library.maven:_javax:javaee-api:7.0.classpath"/>
+    <path refid="library.maven:_com.sun.mail:javax.mail:1.5.0.classpath"/>
+    <path refid="library.maven:_javax.activation:activation:1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.persistence:jpa-connector:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:hk2:1.1.6.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:hk2-core:1.1.6.classpath"/>
+    <path refid="library.maven:_org.glassfish.hk2:class-model:1.1.6.classpath"/>
+    <path refid="library.maven:_junit:junit:4.3.1.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:config:1.1.6.classpath"/>
+    <path refid="library.maven:_org.jvnet:tiger-types:1.2.classpath"/>
+    <path refid="library.maven:_org.glassfish.hk2.external:bean-validator:1.1.6.classpath"/>
+    <path refid="library.maven:_com.googlecode.jtype:jtype:0.1.0.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:auto-depends:1.1.6.classpath"/>
+    <path refid="library.maven:_org.glassfish.persistence:persistence-common:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.deployment:dol:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.servlet:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.annotation:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.transaction:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.enterprise.deploy:3.1.1.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:javax.persistence:2.0.3.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.resource:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.ejb:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:annotation-framework:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:common-util:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.deployment:deployment-common:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.external:management-api:3.1.0-b001.classpath"/>
+    <path refid="library.maven:_org.glassfish.gmbal:gmbal:3.1.0-b001.classpath"/>
+    <path refid="library.maven:_org.glassfish.hk2.external:asm-all-repackaged:1.1.6.classpath"/>
+    <path refid="library.maven:_org.glassfish.deployment:deployment-javaee-core:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.admin:config-api:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-config:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:osgi-adapter:1.0.25.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:container-common:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:glassfish-naming:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.corba:glassfish-corba-omgapi:3.1.0-b030.classpath"/>
+    <path refid="library.maven:_com.sun.corba:glassfish-corba-internal-api:3.1.0-b030.classpath"/>
+    <path refid="library.maven:_org.glassfish.orb:orb-connector:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.corba:glassfish-corba-orbgeneric:3.1.0-b030.classpath"/>
+    <path refid="library.maven:_org.glassfish.admin:monitoring-core:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:stats77:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.flashlight:flashlight-framework:3.1.1.classpath"/>
+    <pathelement location="${basedir}/../../../../Program Files/Java/jdk1.8.0_25/lib/tools.jar"/>
+    <path refid="library.maven:_org.glassfish.admin:admin-util:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.security:security:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.security:ssl-impl:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.security.auth.message:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.security.jacc:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.security:jaspic.provider.framework:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.ejb:ejb-internal-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.external:ldapbp-repackaged:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.external:libpam4j-repackaged:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-comet:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-http:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-framework:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-rcm:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-portunif:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-websockets:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-http-servlet:1.9.36.classpath"/>
+    <path refid="library.maven:_org.glassfish.connectors:connectors-internal-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.transaction:transaction-internal-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:glassfish-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:scattered-archive-api:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:config-types:1.1.6.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-utils:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-lzma:1.9.36.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:internal-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.final.classpath"/>
+    <path refid="library.maven:_jstl:jstl:1.2.classpath"/>
+    <path refid="library.maven:_commons-io:commons-io:2.4.classpath"/>
+    <path refid="library.maven:_commons-lang:commons-lang:2.5.classpath"/>
+  </path>
+  
+  <path id="webservice.runtime.module.classpath">
+    <pathelement location="${webservice.testoutput.dir}"/>
+    <pathelement location="${webservice.output.dir}"/>
+    <path refid="library.grizzly-config.classpath"/>
+    <path refid="library.maven:_mysql:mysql-connector-java:5.1.34.classpath"/>
+    <path refid="library.maven:_javax.ws.rs:javax.ws.rs-api:2.0.1.classpath"/>
+    <path refid="library.maven:_javax:javaee-api:7.0.classpath"/>
+    <path refid="library.maven:_com.sun.mail:javax.mail:1.5.0.classpath"/>
+    <path refid="library.maven:_javax.activation:activation:1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.persistence:jpa-connector:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:hk2:1.1.6.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:hk2-core:1.1.6.classpath"/>
+    <path refid="library.maven:_org.glassfish.hk2:class-model:1.1.6.classpath"/>
+    <path refid="library.maven:_junit:junit:4.3.1.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:config:1.1.6.classpath"/>
+    <path refid="library.maven:_org.jvnet:tiger-types:1.2.classpath"/>
+    <path refid="library.maven:_org.glassfish.hk2.external:bean-validator:1.1.6.classpath"/>
+    <path refid="library.maven:_com.googlecode.jtype:jtype:0.1.0.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:auto-depends:1.1.6.classpath"/>
+    <path refid="library.maven:_org.glassfish.persistence:persistence-common:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.deployment:dol:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.servlet:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.annotation:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.transaction:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.enterprise.deploy:3.1.1.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:javax.persistence:2.0.3.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.resource:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.ejb:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:annotation-framework:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:common-util:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.deployment:deployment-common:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.external:management-api:3.1.0-b001.classpath"/>
+    <path refid="library.maven:_org.glassfish.gmbal:gmbal:3.1.0-b001.classpath"/>
+    <path refid="library.maven:_org.glassfish.hk2.external:asm-all-repackaged:1.1.6.classpath"/>
+    <path refid="library.maven:_org.glassfish.deployment:deployment-javaee-core:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.admin:config-api:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-config:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:osgi-adapter:1.0.25.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:container-common:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:glassfish-naming:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.corba:glassfish-corba-omgapi:3.1.0-b030.classpath"/>
+    <path refid="library.maven:_com.sun.corba:glassfish-corba-internal-api:3.1.0-b030.classpath"/>
+    <path refid="library.maven:_org.glassfish.orb:orb-connector:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.corba:glassfish-corba-orbgeneric:3.1.0-b030.classpath"/>
+    <path refid="library.maven:_org.glassfish.admin:monitoring-core:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:stats77:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.flashlight:flashlight-framework:3.1.1.classpath"/>
+    <pathelement location="${basedir}/../../../../Program Files/Java/jdk1.8.0_25/lib/tools.jar"/>
+    <path refid="library.maven:_org.glassfish.admin:admin-util:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.security:security:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.security:ssl-impl:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.security.auth.message:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish:javax.security.jacc:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.security:jaspic.provider.framework:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.ejb:ejb-internal-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.external:ldapbp-repackaged:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.external:libpam4j-repackaged:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-comet:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-http:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-framework:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-rcm:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-portunif:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-websockets:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-http-servlet:1.9.36.classpath"/>
+    <path refid="library.maven:_org.glassfish.connectors:connectors-internal-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.transaction:transaction-internal-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:glassfish-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:scattered-archive-api:3.1.1.classpath"/>
+    <path refid="library.maven:_com.sun.enterprise:config-types:1.1.6.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-utils:1.9.36.classpath"/>
+    <path refid="library.maven:_com.sun.grizzly:grizzly-lzma:1.9.36.classpath"/>
+    <path refid="library.maven:_org.glassfish.common:internal-api:3.1.1.classpath"/>
+    <path refid="library.maven:_org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.final.classpath"/>
+    <path refid="library.maven:_jstl:jstl:1.2.classpath"/>
+    <path refid="library.maven:_commons-io:commons-io:2.4.classpath"/>
+    <path refid="library.maven:_commons-lang:commons-lang:2.5.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.webservice">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.webservice">
+    <patternset refid="excluded.from.module.webservice"/>
+  </patternset>
+  
+  <path id="webservice.module.sourcepath">
+    <dirset dir="${module.webservice.basedir}">
+      <include name="src/main/java"/>
+      <include name="src/main/resources"/>
+    </dirset>
+  </path>
+  
+  <path id="webservice.module.test.sourcepath">
+    <dirset dir="${module.webservice.basedir}">
+      <include name="src/test/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.webservice" depends="compile.module.webservice.production,compile.module.webservice.tests" description="Compile module WebService"/>
+  
+  <target name="compile.module.webservice.production" depends="register.custom.compilers" description="Compile module WebService; production classes">
+    <mkdir dir="${webservice.output.dir}"/>
+    <javac2 destdir="${webservice.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.webservice}/javac">
+      <compilerarg line="${compiler.args.webservice}"/>
+      <bootclasspath refid="webservice.module.bootclasspath"/>
+      <classpath refid="webservice.module.production.classpath"/>
+      <src refid="webservice.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.webservice"/>
+    </javac2>
+    
+    <copy todir="${webservice.output.dir}">
+      <fileset dir="${module.webservice.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.webservice.basedir}/src/main/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.webservice.tests" depends="register.custom.compilers,compile.module.webservice.production" description="compile module WebService; test classes" unless="skip.tests">
+    <mkdir dir="${webservice.testoutput.dir}"/>
+    <javac2 destdir="${webservice.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.webservice}/javac">
+      <compilerarg line="${compiler.args.webservice}"/>
+      <bootclasspath refid="webservice.module.bootclasspath"/>
+      <classpath refid="webservice.module.classpath"/>
+      <src refid="webservice.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.webservice"/>
+    </javac2>
+    
+    <copy todir="${webservice.testoutput.dir}">
+      <fileset dir="${module.webservice.basedir}/src/test/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.webservice" description="cleanup module">
+    <delete dir="${webservice.output.dir}"/>
+    <delete dir="${webservice.testoutput.dir}"/>
+  </target>
+</project>

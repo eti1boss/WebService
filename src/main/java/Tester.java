@@ -1,4 +1,5 @@
 import controllers.Authenticator;
+import controllers.PathDAO;
 import controllers.UserDAO;
 import controllers.Utils;
 import org.apache.commons.io.FileUtils;
@@ -17,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -188,6 +188,7 @@ public class Tester extends HttpServlet {
             }
             if(continu){
                 File directory = new File(UPLOAD_DIR);
+                System.out.println(directory.getAbsolutePath());
                 HashMap<String,HashMap> list = new HashMap<>();
                 if(directory.exists()) {
                     File[] fList = directory.listFiles();
@@ -214,14 +215,20 @@ public class Tester extends HttpServlet {
         }
 
         if(action.equals("/url")) {
-            Timestamp stamp = (new Timestamp(System.currentTimeMillis()));
-            long time = stamp.getTime();
-            Date date = new Date(time);
-            response.getWriter().println(time+"<br/>"+date);
+            PathDAO pathDAO = new PathDAO();
+            //pathDAO.addPicture("test");
+            //pathDAO = new PathDAO();
+            request.getRequestDispatcher("qsdfginfos.jsp").forward(request, response);
+
         }
 
         if(action.equals("/welcome") || action.equals("/")) {
-            request.getRequestDispatcher("/WEB-INF/jsp/infos.jsp").forward(request, response);
+            response.getWriter().println(request.getPathInfo());
+            response.getWriter().println(request.getRequestURI());
+            response.getWriter().println(request.getPathInfo());
+            response.getWriter().println(request.getContextPath());
+            response.getWriter().println(request.getRemoteUser());
+            response.getWriter().println(request.getServletPath());
         }
 
         if(action.equals("/delete")) {

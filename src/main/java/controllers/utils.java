@@ -16,8 +16,6 @@ import java.util.Formatter;
 public class Utils {
 
     private final static String HMAC_SHA1_ALGORITHM = "HmacSHA1";
-    private static String message;
-    private static MessageDigest algorithm;
     private static String mySalt = "toto";
 
     public static String calcShaHash(String data, String key) {
@@ -40,8 +38,8 @@ public class Utils {
 
     public String calculateHash(MessageDigest algorithm,
                                  String message) throws Exception{
-        this.algorithm = algorithm;
-        this.message = message;
+        MessageDigest algorithm1 = algorithm;
+        String message1 = message;
 
         algorithm.update(message.getBytes());
 

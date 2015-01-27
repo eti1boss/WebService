@@ -1,24 +1,15 @@
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
     <servlet>
-        <servlet-name>hello</servlet-name>
-        <servlet-class>controllers.HelloServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>hello</servlet-name>
-        <url-pattern>/hello/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
         <servlet-name>tester</servlet-name>
         <servlet-class>Tester</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>tester</servlet-name>
-        <url-pattern>/tester/*</url-pattern>
+        <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>
-        <welcome-file>tester/</welcome-file>
+        <welcome-file>upload</welcome-file>
     </welcome-file-list>
 
     <security-constraint>

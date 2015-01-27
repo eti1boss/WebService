@@ -32,8 +32,6 @@ public class UserService{
     private final static String HMAC_SHA1_ALGORITHM = "HmacSHA1";
 
     private static String message;
-    private static MessageDigest algorithm;
-    private static String mySalt = "toto";
 
     @PersistenceContext(unitName = "customerManager") public EntityManager em;
     @PersistenceUnit(name = "customerManager") public EntityManagerFactory factory;
@@ -117,7 +115,7 @@ public class UserService{
             boolean secure = false;
             int expires = 0;
             String cookieName = "NULL";
-            String cookieValue = "NULL";;
+            String cookieValue = "NULL";
             if (cooky != null) {
                 expires = cooky.getMaxAge();
                 secure = cooky.getSecure();
@@ -134,7 +132,8 @@ public class UserService{
             */
 
             String timeStamp = String.valueOf(new Date().getTime());
-            String token = calculateHash(sha1,email+mySalt+timeStamp)+":"+timeStamp;
+            String mySalt = "toto";
+            String token = calculateHash(sha1,email+ mySalt +timeStamp)+":"+timeStamp;
 
             Authenticator auth = new Authenticator();
             String toto = auth.test();
@@ -192,7 +191,7 @@ public class UserService{
 
     public static String calculateHash(MessageDigest algorithm,
                                        String message) throws Exception{
-        UserService.algorithm = algorithm;
+        MessageDigest algorithm1 = algorithm;
         UserService.message = message;
 
         algorithm.update(message.getBytes());
