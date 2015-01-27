@@ -350,15 +350,15 @@
   
   <target name="compile.module.webservice" depends="compile.module.webservice.production,compile.module.webservice.tests" description="Compile module WebService"/>
   
-  <target name="compile.module.webservice.production" depends="register.custom.compilers" description="Compile module WebService; production classes">
+  <target name="compile.module.webservice.production" description="Compile module WebService; production classes">
     <mkdir dir="${webservice.output.dir}"/>
-    <javac2 destdir="${webservice.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.webservice}/javac">
+    <javac destdir="${webservice.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.webservice}/javac">
       <compilerarg line="${compiler.args.webservice}"/>
       <bootclasspath refid="webservice.module.bootclasspath"/>
       <classpath refid="webservice.module.production.classpath"/>
       <src refid="webservice.module.sourcepath"/>
       <patternset refid="excluded.from.compilation.webservice"/>
-    </javac2>
+    </javac>
     
     <copy todir="${webservice.output.dir}">
       <fileset dir="${module.webservice.basedir}/src/main/java">
@@ -372,15 +372,15 @@
     </copy>
   </target>
   
-  <target name="compile.module.webservice.tests" depends="register.custom.compilers,compile.module.webservice.production" description="compile module WebService; test classes" unless="skip.tests">
+  <target name="compile.module.webservice.tests" depends="compile.module.webservice.production" description="compile module WebService; test classes" unless="skip.tests">
     <mkdir dir="${webservice.testoutput.dir}"/>
-    <javac2 destdir="${webservice.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.webservice}/javac">
+    <javac destdir="${webservice.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.webservice}/javac">
       <compilerarg line="${compiler.args.webservice}"/>
       <bootclasspath refid="webservice.module.bootclasspath"/>
       <classpath refid="webservice.module.classpath"/>
       <src refid="webservice.module.test.sourcepath"/>
       <patternset refid="excluded.from.compilation.webservice"/>
-    </javac2>
+    </javac>
     
     <copy todir="${webservice.testoutput.dir}">
       <fileset dir="${module.webservice.basedir}/src/test/java">
