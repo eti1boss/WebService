@@ -1,6 +1,6 @@
 package services;
 
-import com.sun.org.apache.xml.internal.security.utils.Base64;
+import org.apache.commons.codec.binary.Base64;
 import controllers.Authenticator;
 import models.User;
 
@@ -180,7 +180,7 @@ public class UserService{
             Mac mac = Mac.getInstance(HMAC_SHA1_ALGORITHM);
             mac.init(signingKey);
             byte[] rawHmac = mac.doFinal(data.getBytes());
-            result = Base64.encode(rawHmac);
+            result = Base64.encodeBase64String(rawHmac);
         }
         catch (Exception e) {
             e.printStackTrace();
