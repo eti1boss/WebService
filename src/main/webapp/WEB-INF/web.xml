@@ -1,11 +1,12 @@
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+
     <servlet>
         <servlet-name>tester</servlet-name>
         <servlet-class>Tester</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>tester</servlet-name>
-        <url-pattern>/api/*</url-pattern>
+        <url-pattern>/cuploud/*</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>

@@ -1,5 +1,4 @@
 import controllers.Authenticator;
-import controllers.PathDAO;
 import controllers.UserDAO;
 import controllers.Utils;
 import org.apache.commons.io.FileUtils;
@@ -214,12 +213,8 @@ public class Tester extends HttpServlet {
 
         }
 
-        if(action.equals("/url")) {
-            PathDAO pathDAO = new PathDAO();
-            //pathDAO.addPicture("test");
-            //pathDAO = new PathDAO();
-            request.getRequestDispatcher("qsdfginfos.jsp").forward(request, response);
-
+        if(action.equals("/a")) {
+            request.getRequestDispatcher("/WEB-INF/jsp/infos.jsp").forward(request, response);
         }
 
         if(action.equals("/welcome") || action.equals("/")) {
