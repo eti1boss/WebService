@@ -1,6 +1,7 @@
 import controllers.Authenticator;
 import controllers.UserDAO;
 import controllers.Utils;
+import models.User;
 import org.apache.commons.io.FileUtils;
 
 import javax.ejb.Stateless;
@@ -223,7 +224,16 @@ public class Tester extends HttpServlet {
         }
 
         if(action.equals("/a")) {
-            request.getRequestDispatcher("/WEB-INF/jsp/infos.jsp").forward(request, response);
+		try{
+			UserDAO userDAO = new UserDAO();
+
+		        User user = userDAO.getUser("e.bossuet@gmail.com");
+
+			response.getWriter().println(user.getPassword());
+		} catch (Exception e){
+			response.getWriter().println(e.getMessage());
+			e.printStackTrace();
+		}
         }
 
         if(action.equals("/welcome") || action.equals("/")) {
@@ -369,7 +379,7 @@ public class Tester extends HttpServlet {
                 redirect = "listCook == null";
                 try {
                     access = auth.check(request);
-                    if (access) {
+/*                    if (access) {
                         response.getWriter().println("access ok");
                         String email = request.getParameter("email");
                         if (auth.isAdmin(email)) {
@@ -387,7 +397,7 @@ public class Tester extends HttpServlet {
 
                     } else {
                         response.getWriter().println("pas d'access");
-                    }
+                    }*/
                 } catch (Exception e) {
                     redirect = e.getMessage();
                     response.getWriter().println("Exception : " + redirect);
