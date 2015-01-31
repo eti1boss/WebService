@@ -136,7 +136,6 @@ public class UserService{
             String token = calculateHash(sha1,email+ mySalt +timeStamp)+":"+timeStamp;
 
             Authenticator auth = new Authenticator();
-            String toto = auth.test();
 
             if(signature.toString().equals(calculatedSignature.toString())){
                 NewCookie newCookie = new NewCookie("token", token, "", "", "commentaire", 5    , false,true);

@@ -4,7 +4,6 @@ import controllers.Utils;
 import org.apache.commons.io.FileUtils;
 
 import javax.ejb.Stateless;
-import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -14,7 +13,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +54,7 @@ public class Tester extends HttpServlet {
         }
 
         if (action.equals("/upload")) {
+            response.getWriter().println("DEB");
 
             // gets absolute path of the web application
             String applicationPath = getServletContext().getRealPath("");
@@ -63,11 +62,13 @@ public class Tester extends HttpServlet {
             String user = ""+stamp.getTime();
             String root = "";
 
+            response.getWriter().println("DEB ++ ");
             Cookie[] listCook = request.getCookies();
             boolean hasCookie = false;
             if (listCook != null) {
                 for(int i = 0;i<listCook.length;i++){
                     if(listCook[i].getName().equals("token")){
+                        response.getWriter().println("token");
                         root = "private";
                         user = listCook[i].getValue().substring(0, listCook[i].getValue().indexOf(":"));
                         try {
@@ -79,12 +80,14 @@ public class Tester extends HttpServlet {
                         }
                     }
                     if(listCook[i].getName().equals("public")){
+                        response.getWriter().println("public");
                         root = "public";
                         user = listCook[i].getValue().substring(0, listCook[i].getValue().indexOf(":"));
                         hasCookie = true;
                     }
                 }
             }
+            response.getWriter().println("before hascookie");
             if(!hasCookie) {
                 Cookie newCookie = new Cookie("public", user+":");
                 newCookie.setHttpOnly(true);
@@ -95,14 +98,20 @@ public class Tester extends HttpServlet {
             // constructs path of the directory to save uploaded file
             String uploadFilePath = applicationPath + File.separator + UPLOAD_DIR+root+"/"+user;
 
+            response.getWriter().println("Juste avant de faire le traitement d'upload");
 
             // creates the save directory if it does not exists
             File fileSaveDir = new File(UPLOAD_DIR+root+"/"+user);
             if (!fileSaveDir.exists()) {
+                response.getWriter().println("!fileSaveDir.exists()");
                 fileSaveDir.mkdirs();
             }
-            System.out.println("Upload File Directory="+fileSaveDir.getPath());
-
+            response.getWriter().println(fileSaveDir.getPath());
+            response.getWriter().println(fileSaveDir.getAbsolutePath());
+            response.getWriter().println(fileSaveDir.getParent());
+            response.getWriter().println(fileSaveDir.getCanonicalPath());
+            response.getWriter().println(fileSaveDir.exists());
+/*
             String fileName = null;
             //Get all the parts from request and write it to the file on server
             for (Part part : request.getParts()) {
@@ -130,7 +139,7 @@ public class Tester extends HttpServlet {
                 //ImageIO.write(resizeImageJpg1, "jpg", new File(directorySave+"/"+"025_"+fileName));
             }
 //            response.getWriter().write(request.isSecure() + "\n" + user + "\njob done");
-
+*/
         }
     }
     /**
@@ -343,7 +352,7 @@ public class Tester extends HttpServlet {
         }
         if( action.equals("/login")) {
             boolean access = false;
-
+            response.getWriter().println("debut");
             Authenticator auth = new Authenticator();
             boolean hasCookie = false;
 
@@ -356,10 +365,12 @@ public class Tester extends HttpServlet {
                 }
             }
             if (!hasCookie) {
+                response.getWriter().println("pas de cookie");
                 redirect = "listCook == null";
                 try {
                     access = auth.check(request);
                     if (access) {
+                        response.getWriter().println("access ok");
                         String email = request.getParameter("email");
                         if (auth.isAdmin(email)) {
                             redirect = "admin";
@@ -375,16 +386,18 @@ public class Tester extends HttpServlet {
                         response.addCookie(newCookie);
 
                     } else {
-                        redirect = "error";
+                        response.getWriter().println("pas d'access");
                     }
                 } catch (Exception e) {
                     redirect = e.getMessage();
+                    response.getWriter().println("Exception : " + redirect);
                     e.printStackTrace();
                 }
             } else {
                 redirect = "BOUGE PAS COCO, ON VA VERIFIER TON COOKIE, ET TENTE PAS DE NOUS ENTUBER !!!! BATARD VA !!!";
+                response.getWriter().println(redirect);
             }
-            response.sendRedirect("pictures");
+            //response.sendRedirect("pictures");
         }
 
     }

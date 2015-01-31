@@ -15,12 +15,6 @@ import java.security.NoSuchAlgorithmException;
  */
 public class Authenticator {
 
-
-
-    public String test(){
-        return "PROUUUUUUUUUT !!!!!!!!!";
-    }
-
     public boolean check(HttpServletRequest req) throws Exception {
         String email = req.getParameter("email");
         String timestamp = req.getParameter("timestamp");
@@ -64,6 +58,7 @@ public class Authenticator {
                 salt = utils.calculateHash(sha1, email);
                 String httpVerb = "GET";
                 String url = req.getRequestURI()+"?email=" + email + "&timestamp=" + timestamp;
+                System.out.println("EBOS : " + req.getRequestURI() + " ///////// " + req.getRequestURL());
                 httpUrl = httpVerb + ":" + url;
 
                 calculatedSignature = Utils.calcShaHash(httpUrl, password);

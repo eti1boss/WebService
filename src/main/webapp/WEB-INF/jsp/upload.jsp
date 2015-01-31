@@ -69,7 +69,7 @@
   </nav>
 </header>
 <div style="margin-left: 50px; margin-right: 50px; margin-top: 100px">
-  <form action="/SampleApp/tester/upload" class="dropzone" id="myDrop">
+  <form action="/cuploud/upload" class="dropzone" id="myDrop">
   </form>
 </div>
 
