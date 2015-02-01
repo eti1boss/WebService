@@ -227,7 +227,8 @@ public class Tester extends HttpServlet {
 		try{
 			UserDAO userDAO = new UserDAO();
 
-		        User user = userDAO.getUser("e.bossuet@gmail.com");
+//			String res = userDAO.addUser("test","test");
+			User user = userDAO.getUser("e.bossuet@gmail.com");
 
 			response.getWriter().println(user.getPassword());
 		} catch (Exception e){
@@ -379,7 +380,7 @@ public class Tester extends HttpServlet {
                 redirect = "listCook == null";
                 try {
                     access = auth.check(request);
-/*                    if (access) {
+                    if (access) {
                         response.getWriter().println("access ok");
                         String email = request.getParameter("email");
                         if (auth.isAdmin(email)) {
@@ -397,7 +398,7 @@ public class Tester extends HttpServlet {
 
                     } else {
                         response.getWriter().println("pas d'access");
-                    }*/
+                    }
                 } catch (Exception e) {
                     redirect = e.getMessage();
                     response.getWriter().println("Exception : " + redirect);
