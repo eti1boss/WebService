@@ -56,7 +56,7 @@
   </nav>
 </header>
 
-<form id="test" action="/SampleApp/tester/delete" method="get">
+<form id="test" action="/SampleApp/cuploud/delete" method="get">
   <input type="hidden" name="pictureName" value=""/>
   <input type="hidden" name="admin" value="true"/>
 </form>

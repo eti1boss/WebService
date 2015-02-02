@@ -5,6 +5,8 @@ import models.User;
 import org.apache.commons.io.FileUtils;
 
 import javax.ejb.Stateless;
+import javax.imageio.ImageIO;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -14,6 +16,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +32,7 @@ import java.util.List;
 @WebServlet(name = "Tester")
 public class Tester extends HttpServlet {
 
-    private static final String UPLOAD_DIR = "/uploads/";
+    private static final String UPLOAD_DIR = "/home/osef/uploads/";
     Utils utils = new Utils();
     Authenticator authenticator = new Authenticator();
 
@@ -55,7 +58,7 @@ public class Tester extends HttpServlet {
         }
 
         if (action.equals("/upload")) {
-            response.getWriter().println("DEB");
+            System.out.println("DEB");
 
             // gets absolute path of the web application
             String applicationPath = getServletContext().getRealPath("");
@@ -63,13 +66,13 @@ public class Tester extends HttpServlet {
             String user = ""+stamp.getTime();
             String root = "";
 
-            response.getWriter().println("DEB ++ ");
+            System.out.println("DEB ++ ");
             Cookie[] listCook = request.getCookies();
             boolean hasCookie = false;
             if (listCook != null) {
                 for(int i = 0;i<listCook.length;i++){
                     if(listCook[i].getName().equals("token")){
-                        response.getWriter().println("token");
+                        System.out.println("token");
                         root = "private";
                         user = listCook[i].getValue().substring(0, listCook[i].getValue().indexOf(":"));
                         try {
@@ -81,16 +84,17 @@ public class Tester extends HttpServlet {
                         }
                     }
                     if(listCook[i].getName().equals("public")){
-                        response.getWriter().println("public");
+                        System.out.println("public");
                         root = "public";
                         user = listCook[i].getValue().substring(0, listCook[i].getValue().indexOf(":"));
                         hasCookie = true;
                     }
                 }
             }
-            response.getWriter().println("before hascookie");
+            System.out.println("before hascookie");
             if(!hasCookie) {
                 Cookie newCookie = new Cookie("public", user+":");
+		root = "public";
                 newCookie.setHttpOnly(true);
                 newCookie.setSecure(false);
                 response.addCookie(newCookie);
@@ -99,20 +103,20 @@ public class Tester extends HttpServlet {
             // constructs path of the directory to save uploaded file
             String uploadFilePath = applicationPath + File.separator + UPLOAD_DIR+root+"/"+user;
 
-            response.getWriter().println("Juste avant de faire le traitement d'upload");
+            System.out.println("Juste avant de faire le traitement d'upload");
 
             // creates the save directory if it does not exists
             File fileSaveDir = new File(UPLOAD_DIR+root+"/"+user);
             if (!fileSaveDir.exists()) {
-                response.getWriter().println("!fileSaveDir.exists()");
+                System.out.println("!fileSaveDir.exists()");
                 fileSaveDir.mkdirs();
             }
-            response.getWriter().println(fileSaveDir.getPath());
-            response.getWriter().println(fileSaveDir.getAbsolutePath());
-            response.getWriter().println(fileSaveDir.getParent());
-            response.getWriter().println(fileSaveDir.getCanonicalPath());
-            response.getWriter().println(fileSaveDir.exists());
-/*
+            System.out.println(fileSaveDir.getPath());
+            System.out.println(fileSaveDir.getAbsolutePath());
+            System.out.println(fileSaveDir.getParent());
+            System.out.println(fileSaveDir.getCanonicalPath());
+            System.out.println(fileSaveDir.exists());
+
             String fileName = null;
             //Get all the parts from request and write it to the file on server
             for (Part part : request.getParts()) {
@@ -140,7 +144,7 @@ public class Tester extends HttpServlet {
                 //ImageIO.write(resizeImageJpg1, "jpg", new File(directorySave+"/"+"025_"+fileName));
             }
 //            response.getWriter().write(request.isSecure() + "\n" + user + "\njob done");
-*/
+
         }
     }
     /**
@@ -224,26 +228,24 @@ public class Tester extends HttpServlet {
         }
 
         if(action.equals("/a")) {
+
+		ServletContext sc = getServletContext().getContext("/");
+		String res = sc.getRealPath("/lol");
+
+		File dir = new File("/upup/prout");
+		response.getWriter().println(String.valueOf(dir.exists()));
 		try{
-			UserDAO userDAO = new UserDAO();
-
-//			String res = userDAO.addUser("test","test");
-			User user = userDAO.getUser("e.bossuet@gmail.com");
-
-			response.getWriter().println(user.getPassword());
+			dir.mkdirs();
 		} catch (Exception e){
 			response.getWriter().println(e.getMessage());
-			e.printStackTrace();
 		}
+		response.getWriter().println(String.valueOf(dir.exists()));
+		response.getWriter().println(String.valueOf(dir.getAbsolutePath()));
+		response.getWriter().println(res);
         }
 
-        if(action.equals("/welcome") || action.equals("/")) {
-            response.getWriter().println(request.getPathInfo());
-            response.getWriter().println(request.getRequestURI());
-            response.getWriter().println(request.getPathInfo());
-            response.getWriter().println(request.getContextPath());
-            response.getWriter().println(request.getRemoteUser());
-            response.getWriter().println(request.getServletPath());
+        if(action.equals("/")) {
+                response.sendRedirect("upload");
         }
 
         if(action.equals("/delete")) {
@@ -273,10 +275,12 @@ public class Tester extends HttpServlet {
                 }
             }
             if(isAdmin){
-                FileUtils.deleteDirectory(new File(picName));
+                FileUtils.deleteDirectory(new File("/home/osef/"+picName));
+		System.out.println("delete : " + "/home/osef/"+picName);
                 response.sendRedirect("admin");
             } else {
-                FileUtils.deleteDirectory(new File("/uploads/" + root+"/"+user + "/" + picName));
+                FileUtils.deleteDirectory(new File("/home/osef/uploads/" + root+"/"+user + "/" + picName));
+		System.out.println("delete : " + "/home/osef/uploads/" + root+"/"+user + "/" + picName);
                 response.sendRedirect("pictures");
             }
         }
@@ -311,7 +315,7 @@ public class Tester extends HttpServlet {
             }
             if(hasCookie){
 
-                File directory = new File("/uploads/"+root+"/"+user);
+                File directory = new File(UPLOAD_DIR+root+"/"+user);
                 HashMap<String,List<String>> files = new HashMap<>();
                 if(directory.exists()) {
                     File[] fList = directory.listFiles();
@@ -319,7 +323,7 @@ public class Tester extends HttpServlet {
                         String dir = file.getName();
                         List<String> pic = new ArrayList<>();
                         for (File file2 : file.listFiles()) {
-                            pic.add(file2.getPath());
+                            pic.add(file2.getPath().replace("/home/osef",""));
                         }
                         files.put(dir, pic);
                     }
@@ -408,7 +412,8 @@ public class Tester extends HttpServlet {
                 redirect = "BOUGE PAS COCO, ON VA VERIFIER TON COOKIE, ET TENTE PAS DE NOUS ENTUBER !!!! BATARD VA !!!";
                 response.getWriter().println(redirect);
             }
-            //response.sendRedirect("pictures");
+		System.out.println("access : "+access);
+            response.sendRedirect("pictures");
         }
 
     }
