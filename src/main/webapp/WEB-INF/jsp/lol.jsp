@@ -86,9 +86,9 @@
             <c:set var="date" value="${ fn:substringBefore(entry.key, '_') }"/>
             <h3>${name}</h3>
 
-            <a href="${pageContext.request.contextPath}<c:out value="${entry.value[2]}"/>">High</a>
-            <a href="${pageContext.request.contextPath}<c:out value="${entry.value[1]}"/>">Medium</a>
-            <a href="${pageContext.request.contextPath}<c:out value="${entry.value[0]}"/>">Low</a>
+              <a name="picture" href="${pageContext.request.contextPath}<c:out value="${entry.value[0]}"/>">High</a>
+              <a name="picture" href="${pageContext.request.contextPath}<c:out value="${entry.value[2]}"/>">Medium</a>
+              <a name="picture" href="${pageContext.request.contextPath}<c:out value="${entry.value[1]}"/>">Low</a>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <a onclick="deletePic('${entry.key}')" href="#">Delete</a>
           </figcaption>
@@ -109,11 +109,29 @@
   });
 </script-->
   <script>
+
+    $(document).ready(function(){
+        $("a[name=picture]").click(function(e){
+            e.preventDefault();
+            var url = window.location.origin+$(this).attr('href');
+            $.ajax({
+                url : "https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyC-G1WrSXggfDDHmcazfzNoirwpLNGEpMQ",
+                type: "post",
+                contentType: "application/json",
+                data: '{"longUrl": "'+url+'"}',
+                success : function(data) {
+                    window.prompt("Copy to clipboard: Ctrl+C, Enter", data.id);
+                }
+            });
+        });
+    });
+
     function deletePic(name){
       //alert(name);
       $("input[name=pictureName]").val(name);
       $("#test").submit();
     }
+
   </script>
   <script type="text/javascript" src="${pageContext.request.contextPath}/lib/caption/js/toucheffects.js"></script>
 
