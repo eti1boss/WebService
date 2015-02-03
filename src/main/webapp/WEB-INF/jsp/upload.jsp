@@ -34,7 +34,7 @@
 <body>
 
 <header role="banner">
-  <div id="cd-logo"><a href="#0"><img src="${pageContext.request.contextPath}/lib/login/img/cd-logo.svg" alt="Logo"></a></div>
+  <div id="cd-logo"><a href="#0"><img style="width:330px;margin-top:-20px" src="${pageContext.request.contextPath}/lib/login/img/cuploud.png" alt="Logo"></a></div>
 
   <nav class="open main-nav">
     <ul>
@@ -69,7 +69,7 @@
   </nav>
 </header>
 <div style="margin-left: 50px; margin-right: 50px; margin-top: 100px">
-  <form action="/cuploud/upload" class="dropzone" id="myDrop">
+  <form action="/SampleApp/cuploud/upload" class="dropzone" id="myDrop">
   </form>
 </div>
 

@@ -58,11 +58,12 @@ public class Authenticator {
                 salt = utils.calculateHash(sha1, email);
                 String httpVerb = "GET";
                 String url = req.getRequestURI()+"?email=" + email + "&timestamp=" + timestamp;
-                System.out.println("EBOS : " + req.getRequestURI() + " ///////// " + req.getRequestURL());
+                //System.out.println("EBOS : " + req.getRequestURI() + " ///////// " + req.getRequestURL());
                 httpUrl = httpVerb + ":" + url;
 
                 calculatedSignature = Utils.calcShaHash(httpUrl, password);
 
+//		System.out.println("Signature envoyée : " + signature.toString() + " <-> " + calculatedSignature.toString() + " : signature calculée");
                 if(signature.toString().equals(calculatedSignature.toString())){
                     return true;
                 } else {

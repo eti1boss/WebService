@@ -6,7 +6,6 @@ package controllers;
 
 import models.User;
 
-import javax.ejb.Stateless;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.*;
@@ -14,7 +13,6 @@ import javax.transaction.*;
 import javax.transaction.RollbackException;
 import java.security.MessageDigest;
 
-@Stateless
 public class UserDAO {
 
     public String addUser(String email, String password){
@@ -52,7 +50,9 @@ public class UserDAO {
                 a.setPassword(password);
                 a.setAdmin(false);
 
+		redirect = String.valueOf(em.createNativeQuery("SELECT * from users").getResultList().size());
             } catch (Exception e) {
+		redirect = e.getMessage();
                 e.printStackTrace();
             }
 
@@ -73,6 +73,7 @@ public class UserDAO {
             redirect = "SystemException <br/>"+e.getMessage();
             e.printStackTrace();
         }
+
         return redirect;
     }
 
@@ -82,38 +83,16 @@ public class UserDAO {
                 Persistence.createEntityManagerFactory("customerManager");
         EntityManager em = emf.createEntityManager();
 
-        UserTransaction transaction = null;
-
-        try {
-            transaction = (UserTransaction)new InitialContext().lookup("java:comp/UserTransaction");
-            transaction.begin();
-        } catch (NamingException e) {
-            e.printStackTrace();
-        } catch (NotSupportedException e) {
-            e.printStackTrace();
-        } catch (SystemException e) {
-            e.printStackTrace();
-        }
 
         TypedQuery<User> res = em.createQuery("select u from User u where u.email = '"+email+"'", User.class);
-        User user;
+	User user = null;
         try {
             user = res.getSingleResult();
         } catch (NoResultException e) {
-            user = null;
+		user = null;
         }
-        em.joinTransaction();
-        try {
-            transaction.commit();
-        } catch (RollbackException e) {
-            e.printStackTrace();
-        } catch (HeuristicMixedException e) {
-            e.printStackTrace();
-        } catch (HeuristicRollbackException e) {
-            e.printStackTrace();
-        } catch (SystemException e) {
-            e.printStackTrace();
-        }
+
+//        em.joinTransaction();
 
         return user;
     }
