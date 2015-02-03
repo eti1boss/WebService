@@ -402,6 +402,9 @@ public class Tester extends HttpServlet {
 
                     } else {
                         response.getWriter().println("pas d'access");
+//			request.setAttribute("message","Le nom d'utilisateur ou le mot de passe est incorrecte.");
+//	            	request.getRequestDispatcher("/WEB-INF/jsp/infos.jsp").forward(request, response);
+
                     }
                 } catch (Exception e) {
                     redirect = e.getMessage();

@@ -92,7 +92,7 @@ public class UserDAO {
 		user = null;
         }
 
-        em.joinTransaction();
+//        em.joinTransaction();
 
         return user;
     }

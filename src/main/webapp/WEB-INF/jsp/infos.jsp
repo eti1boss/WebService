@@ -41,7 +41,7 @@
 <body>
 
 <header role="banner">
-    <div id="cd-logo"><a href="#0"><img src="${pageContext.request.contextPath}/lib/login/img/cd-logo.svg" alt="Logo"></a></div>
+  <div id="cd-logo"><a href="#0"><img style="width:330px;margin-top:-20px" src="${pageContext.request.contextPath}/lib/login/img/cuploud.png" alt="Logo"></a></div>
 
     <nav class="open main-nav">
         <ul>
